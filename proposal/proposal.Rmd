@@ -1,0 +1,118 @@
+---
+title: "STAT 405 Project Proposal: Bayesian Hierarchical Modeling of Cancer Mutation Rates"
+author: "Torrin Pataki, Annmarie Thomson"
+date: "2026-03-16"
+output: pdf_document
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+library(readr)
+library(cbioportalR)
+library(dplyr)
+library(tidyr)
+```
+
+## Team
+
+Torrin Pataki and Annmarie Thomson
+
+**Repository**: [github.com/annmariet/stat405_project](https://github.com/annmariet/stat405_project)
+
+## Research Question
+
+Somatic mutation rates for cancer-driving genes vary dramatically across cancer types. For example, the gene *TP53* is mutated in \~95% of ovarian cancers but only \~2% of kidney cancers.
+
+Our research question is: How much do cancer risks and mutation patterns vary across cancer types, and what common structures can be learned by borrowing information across related cancers?
+
+## Main Dataset: TCGA PanCancer Atlas via cBioPortal
+
+The Cancer Genome Atlas (TCGA) PanCancer Atlas provides uniformly processed somatic mutation data across 33 cancer types and \~11,000 tumors. We access it through the public cBioPortal API using the `cbioportalR` R package.
+
+**URL**: <https://www.cbioportal.org/>
+
+We will extract mutation counts for 10 well-studied oncogenes and tumor suppressors (TP53, KRAS, PIK3CA, BRAF, PTEN, APC, ARID1A, EGFR, IDH1, CDKN2A) across \~20 cancer types with $N \geq 150$ sequenced samples. Each observation is a (gene, cancer type) pair with counts $(y_{gc}, n_{gc})$, where $y_{gc}$ is the number of samples harboring a mutation in gene $g$ in cancer type $c$, and $n_{gc}$ is the total number of sequenced samples.
+
+```{r}
+set_cbioportal_db("public")
+
+# pull mutation data for 3 cancer types as prototype
+study_ids <- c("brca_tcga_pan_can_atlas_2018",
+               "luad_tcga_pan_csan_atlas_2018",
+               "skcm_tcga_pan_can_atlas_2018")
+
+genes <- c("TP53", "KRAS", "PIK3CA", "BRAF", "PTEN")
+
+pull_counts <- function(sid, genes) {
+  # get sample list for this study
+  samples <- available_samples(study_id = sid)
+  n_total <- nrow(samples)
+
+  # query mutations for target genes only (avoids downloading entire study)
+  muts <- get_mutations_by_sample(
+    sample_id = samples$sampleId,
+    study_id = sid,
+    genes = genes
+  )
+
+  counts <- muts %>%
+    distinct(hugoGeneSymbol, sampleId) %>%
+    count(hugoGeneSymbol, name = "n_mutated")
+
+  tibble(gene = genes) %>%
+    left_join(counts, by = c("gene" = "hugoGeneSymbol")) %>%
+    mutate(n_mutated = replace_na(n_mutated, 0),
+           n_total = n_total,
+           study = sid,
+           cancer = gsub("_tcga_pan_can_atlas_2018", "", sid),
+           rate = round(n_mutated / n_total, 3))
+}
+
+prototype <- bind_rows(lapply(study_ids, pull_counts, genes = genes))
+```
+
+```{r show-data}
+head(prototype, 15)
+str(prototype)
+```
+
+The full dataset will expand this to 10 genes $\times$ \~20 cancer types $\approx$ 200 observations.
+
+## Backup Dataset: The Catalogue of Somatic Mutations in Cancer (COSMIC) Datasets
+
+If the TCGA/cBioPortal approach encounters issues, we will pivot to the COSMIC (Catalogue Of Somatic Mutations In Cancer) database, a large curated resource of somatic mutation information across human cancers.
+
+**URL**: <https://cancer.sanger.ac.uk/cosmic/download/cosmic>
+
+```{r}
+mutant_census <- read_tsv(
+  "Cosmic_MutantCensus_v103_GRCh37.tsv",
+  n_max = 10
+)
+
+head(mutant_census)
+```
+
+## Methodology plan
+
+**Model 1 (naive)**: Independent Beta-Binomial models per gene per cancer type. $$y_{gc} \mid \theta_{gc} \sim \text{Binomial}(n_{gc},\, \theta_{gc}), \quad \theta_{gc} \sim \text{Beta}(1, 1)$$
+
+**Model 2 (hierarchical)**: Hierarchical Beta-Binomial with gene-level hyperparameters. $$y_{gc} \mid \theta_{gc} \sim \text{Binomial}(n_{gc},\, \theta_{gc}), \quad \theta_{gc} \sim \text{Beta}(\alpha_g,\, \beta_g)$$ $$\alpha_g,\, \beta_g \sim \text{hyperprior}$$
+
+This enables partial pooling of mutation rates across cancer types within each gene.
+
+**Additional analyses**: prior sensitivity analysis (varying hyperprior choices), posterior predictive checks, and comparison of shrinkage behavior between the naive and hierarchical models.
+
+### Team Plan
+
+To ensure that the work is divided equally, we have created a team schedule and will meet at least once a week to make sure that we are consistently working towards deadlines.
+
+| Week | Tasks |
+|----|----|
+| Mar 8 - Mar 14 | Determine data sets, identify research questions, and turn in proposal |
+| Mar 15 - Mar 21 | Work on literature review, develop research questions, identify gaps |
+| Mar 22 - Mar 28 | Determine naiive method and work on analysis, work on interpretation |
+| Mar 29 - Apr 4 | Determine more complex method(s) and work on analysis and interpretation |
+| Apr 5 - Apr 11 | Add discussion, conclusions, implications |
+| Apr 12 - Apr 17 | Finish report and submit |
