@@ -1,0 +1,18 @@
+# Discussion
+
+Our hierarchical Beta-Binomial quantifies how mutation prevalence varies across cancer types within a gene. The gene-level concentration parameter $s_g$ provides a clear summary of cross-cancer mutation consistency, separating broadly-active tumor suppressors (TP53, $s \approx 3$) from
+narrowly cancer-specific oncogenes (EGFR, $s \approx 19$). These patterns align with known biological behavior of these genes, suggesting that the model is capturing meaningful structure in the data.
+
+The model further provides a useful predictive framework. The gene-level posterior predictive distribution can be used to estimate mutation prevalence in a new or less-studied cancer type. This may be helpful for guiding expectations in small datasets or early-stage clinical studies. 
+
+We have two main methodological takeaways. First, while HMC provides reliable posterior inference, mean-field ADVI offers a much faster approximation that performed similarly to HMC. However, full-rank ADVI did not align well with HMC, despite being more flexible. This suggests that increased model flexibility does not always lead to better approximations.
+
+Overall, this analysis demonstrates how hierarchical Bayesian modeling can be used to estimate mutation prevalence from real-world cancer data. By balancing infomration sharing across cancer types with gene-specific differences, the model provides improved estimation and summaries of cross-cancer mutation behaviour. 
+
+**Limitations.** Our model pools information within gene, but does not extend this structure across genes. A second
+hierarchical level ($\mu_g \sim \text{Beta}(A, B)$ with hyper-hyperpriors) is
+natural but borderline-identifiable with only 10 genes. We also treat cancer types as independent, ignoring the tissue-of-origin structure that has been shown to be a dominant source of molecular variation in pan-cancer analyses (Hoadley et al., 2018). In addition, mutation status is treated as binary which may over-simplify differences between mutation types and locations (e.g. *KRAS* G12C vs G12D). Finally, for simplicity, our model assumes independence across genes and therefore does not capture known patterns of co-occurrence and mutual exclusivity in cancer genomics, which have been linked to underlying pathway interactions (El Tekle et al., 2021; Unni et al., 2015), and can be modeled using more complex approaches such as Bayesian networks (Kuipers et al., 2018). These limitations suggest clear directions for further developing this analysis.
+
+## Team contributions {-}
+
+This project was done collaboratively, with idea generation, model selection, coding, literature reviewing, and writing split evenly between us. Due to some technical difficulties and a lot of in-person work, most of the commits on the Github repository are by Annmarie, however, this is not representative of the division of work and was just for convenience. 
