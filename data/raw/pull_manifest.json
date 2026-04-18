@@ -1,0 +1,10 @@
+{
+  "pulled_at": "2026-04-14 14:47:58 PDT",
+  "cbioportalR_ver": "1.1.1",
+  "R_version": "R version 4.5.1 (2025-06-13 ucrt)",
+  "genes": ["TP53", "KRAS", "PIK3CA", "BRAF", "PTEN", "APC", "ARID1A", "EGFR", "IDH1", "CDKN2A"],
+  "study_ids": ["brca_tcga_pan_can_atlas_2018", "luad_tcga_pan_can_atlas_2018", "lusc_tcga_pan_can_atlas_2018", "skcm_tcga_pan_can_atlas_2018", "coadread_tcga_pan_can_atlas_2018", "stad_tcga_pan_can_atlas_2018", "ucec_tcga_pan_can_atlas_2018", "ov_tcga_pan_can_atlas_2018", "blca_tcga_pan_can_atlas_2018", "hnsc_tcga_pan_can_atlas_2018", "kirc_tcga_pan_can_atlas_2018", "kirp_tcga_pan_can_atlas_2018", "lihc_tcga_pan_can_atlas_2018", "prad_tcga_pan_can_atlas_2018", "thca_tcga_pan_can_atlas_2018", "lgg_tcga_pan_can_atlas_2018", "gbm_tcga_pan_can_atlas_2018", "paad_tcga_pan_can_atlas_2018", "cesc_tcga_pan_can_atlas_2018", "sarc_tcga_pan_can_atlas_2018"],
+  "n_observations": 200,
+  "n_genes": 10,
+  "n_studies": 20
+}
