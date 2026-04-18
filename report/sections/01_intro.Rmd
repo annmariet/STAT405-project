@@ -10,7 +10,7 @@ used to improve estimates, especially for cancer types with limited sample sizes
 
 We ask: *how much does mutation prevalence vary across cancer types within a
 given gene, and what common gene-level structure can we recover by borrowing
-information across cancers?* Mutation prevalence refers to the proportion of tumors in a given cancer type that contain a mutation in a specific gene. The key modeling challenge is to balance information sharing across cancer types with the need to preserve gene-specific differences.
+information across cancers?* Mutation prevalence refers to the proportion of tumors in a given cancer type that contain a mutation in a specific gene. The main modeling challenge is to balance information sharing across cancer types with the need to preserve gene-specific differences.
 
 We take a Bayesian hierarchical approach on
 counts from 10 well-studied oncogenes and tumor suppressors across 20 TCGA

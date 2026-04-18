@@ -11,11 +11,6 @@ source("R/utils.R")
 out_csv      <- "data/raw/cbioportal_pull_2026-04-14.csv"
 out_manifest <- "data/raw/pull_manifest.json"
 
-if (file.exists(out_csv)) {
-  message("cached pull exists at ", out_csv, " — skipping. delete to re-run.")
-  quit(status = 0)
-}
-
 set_cbioportal_db("public")
 
 message(sprintf("pulling %d genes x %d studies", length(GENES), length(STUDY_IDS)))
@@ -36,6 +31,8 @@ manifest <- list(
   n_genes          = length(GENES),
   n_studies        = length(STUDY_IDS)
 )
-write_json(manifest, out_manifest, pretty = TRUE, auto_unbox = TRUE)
+write_json(manifest,
+           out_manifest,
+           pretty = TRUE,
+           auto_unbox = TRUE)
 
-message(sprintf("done: %d rows -> %s", nrow(raw), out_csv))

@@ -1,0 +1,93 @@
+# Stan model code
+
+**Model 1 (naive independent Beta-Binomial):**
+
+```stan
+data {
+  int<lower=1> N;
+  array[N] int<lower=0> y;
+  array[N] int<lower=1> n;
+}
+parameters {
+  vector<lower=0, upper=1>[N] theta;
+}
+model {
+  theta ~ beta(1, 1);
+  y ~ binomial(n, theta);
+}
+generated quantities {
+  array[N] int y_rep;
+  vector[N] log_lik;
+  for (i in 1:N) {
+    y_rep[i]   = binomial_rng(n[i], theta[i]);
+    log_lik[i] = binomial_lpmf(y[i] | n[i], theta[i]);
+  }
+}
+```
+
+**Model 2 (hierarchical Beta-Binomial, primary priors):**
+
+```stan
+data {
+  int<lower=1> N;
+  int<lower=1> G;
+  array[N] int<lower=1, upper=G> gene;
+  array[N] int<lower=0> y;
+  array[N] int<lower=1> n;
+}
+parameters {
+  vector<lower=0, upper=1>[G] mu;
+  vector<lower=0>[G]          s;
+  vector<lower=0, upper=1>[N] theta;
+}
+transformed parameters {
+  vector<lower=0>[G] alpha_ = mu .* s;
+  vector<lower=0>[G] beta_  = (1 - mu) .* s;
+}
+model {
+  mu ~ beta(1, 1);
+  s  ~ exponential(0.1);
+  for (i in 1:N)
+    theta[i] ~ beta(alpha_[gene[i]], beta_[gene[i]]);
+  y ~ binomial(n, theta);
+}
+generated quantities {
+  array[N] int y_rep;
+  vector[N] log_lik;
+  for (i in 1:N) {
+    y_rep[i]   = binomial_rng(n[i], theta[i]);
+    log_lik[i] = binomial_lpmf(y[i] | n[i], theta[i]);
+  }
+}
+```
+
+# Diagnostics
+
+```{r ppc-naive-appx, fig.cap = "Naive model posterior predictive check.", out.width = "65%"}
+include_graphics("../figs/ppc_naive.png")
+```
+
+```{r shrinkage-appx, fig.cap = "Hierarchical posterior mean $\\hat\\theta_{gc}$ vs raw rate $y/n$. With $n_{gc} \\geq 150$ per cell, shrinkage is small in absolute terms; the hierarchical payoff is in the gene-level hyperparameters (see Fig. 2).", out.width = "95%"}
+include_graphics("../figs/shrinkage.png")
+```
+
+# Prior Evaluation
+```{r prior-sens, fig.cap = "Posterior of gene-level mean rate $\\mu_g$ under three priors on $s_g$. Point estimates are stable within sampling error; credible intervals widen slightly under the tighter prior for genes with low observed concentration.", out.width = "75%"}
+include_graphics("../figs/prior_sensitivity.png")
+```
+
+# Reproduction
+
+All analyses use R 4.x, `cmdstanr` 0.8+, and the `loo`, `bayesplot`,
+`posterior`, and `tidyverse` packages. The data pull is cached at
+`data/raw/cbioportal_pull_2026-04-14.csv`; the full pipeline is:
+
+```r
+source("R/02_clean_data.R")       # build processed/mutation_counts.rds
+source("R/03_fit_naive.R")        # Model 1 + PPC
+source("R/04_fit_hier.R")         # Model 2 + shrinkage + LOO
+source("R/04b_gene_predictive.R") # gene-level predictive figure
+source("R/05_fit_advi.R")         # ADVI mean-field + full-rank
+source("R/06_prior_sensitivity.R")# prior sweep
+rmarkdown::render("report/report.Rmd")
+```

@@ -28,10 +28,3 @@ stopifnot(
 dir.create("data/processed", showWarnings = FALSE, recursive = TRUE)
 saveRDS(d, "data/processed/mutation_counts.rds")
 
-message(sprintf("saved %d rows -> data/processed/mutation_counts.rds", nrow(d)))
-message("rows per gene:")
-print(count(d, gene))
-message("\nrows per cancer:")
-print(count(d, cancer))
-message("\nplausibility check (TP53 by cancer):")
-print(filter(d, gene == "TP53") %>% select(cancer, y, n, rate))

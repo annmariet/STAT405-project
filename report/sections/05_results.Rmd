@@ -8,7 +8,7 @@ cross-validation [via the `loo` package] favours the hierarchical model
 by an ELPD difference of $-28.0$ ($\text{SE} = 5.4$) over the independent
 baseline. This provides evidence that borrowing information across cancer types improves the predictive performance of our model. 
 
-```{r ppc-hier, fig.cap = "Hierarchical model posterior predictive check: observed rate density (dark) against 100 replicated datasets (light).", out.width = "75%"}
+```{r ppc-hier, fig.cap = "Hierarchical model posterior predictive check: observed rate density (dark) against 100 replicated datasets (light).", out.width = "60%"}
 include_graphics("../figs/ppc_hier.png")
 ```
 
@@ -28,7 +28,7 @@ $(\mu_g, s_g)$. This is the mutation rate we would expect for unseen cancer type
 3. *Intermediate* (PIK3CA, KRAS, PTEN): posterior means in the 0.09–0.13
    range with moderate $s_g$. These genes are involved in multiple cancer types but do not have the same spread of TP53 or concentration of EGFR or CDKN2A.
 
-```{r gene-pred, fig.cap = "Gene-level posterior predictive distribution of $\\theta$ (blue density), overlaid with observed rates as a red rug. TP53 spans a wide range; EGFR and CDKN2A are concentrated near zero with outliers.", out.width = "95%"}
+```{r gene-pred, fig.cap = "Gene-level posterior predictive distribution of $\\theta$ (blue density), overlaid with observed rates as a red rug. TP53 spans a wide range; EGFR and CDKN2A are concentrated near zero with outliers.", out.width = "85%"}
 include_graphics("../figs/gene_predictive.png")
 ```
 
@@ -36,13 +36,9 @@ include_graphics("../figs/gene_predictive.png")
 
 We refit the hierarchical model under two alternative priors on $s_g$. A
 tighter $\text{Gamma}(2, 0.1)$ (mean 20) and diffuse half-Cauchy$(0, 25)$
-(Figure \@ref(fig:prior-sens)). These priors all reflect different assumptions about the degree of cross-cancer consistency. The Gamma prior concentrates mass on moderate values of $s_g$, favouring stronger pooling across cancer types, while the half-Cauchy prior is heavy tailed which allows for the possibility of very large $s_g$. We found that posterior means of $\mu_g$ are prior invariant. Across all 10 genes and three priors, the maximum shift in
+(Figure \@ref(fig:prior-sens)). These priors all reflect different assumptions about the degree of cross-cancer consistency. The Gamma prior concentrates mass on moderate values of $s_g$, favouring stronger pooling across cancer types, while the half-Cauchy prior is heavy tailed which allows for the possibility of very large $s_g$. Across all 10 genes and three priors, the maximum shift in
 $\hat{\mu}_g$ is 0.010, while $s_g$ estimates shift by 10–20%, most visibly for
 genes whose concentration is driven by a single dominant cancer (e.g., EGFR: 18.5, 21.1, 22.0 under Exponential, Gamma, and Cauchy). Gene
-rankings by $\mu_g$ are identical under every prior, confirming that
+rankings by $\mu_g$ are identical under every prior (Appendix C), confirming that
 cross-cancer mean rates are data-driven and that prior choice affects only
 how strongly the model interprets heterogeneity around those means.
-
-```{r prior-sens, fig.cap = "Posterior of gene-level mean rate $\\mu_g$ under three priors on $s_g$. Point estimates are stable within sampling error; credible intervals widen slightly under the tighter prior for genes with low observed concentration.", out.width = "85%"}
-include_graphics("../figs/prior_sensitivity.png")
-```
