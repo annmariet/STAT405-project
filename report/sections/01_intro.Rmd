@@ -5,7 +5,7 @@ types. For example, the gene *TP53* is mutated in roughly 83% of lung squamous c
 1% of thyroid cancers, while *EGFR* is a near-defining feature of lung
 adenocarcinoma and essentially absent elsewhere. Reporting each
 (gene, cancer-type) rate independently ignores the fact that most oncogenes (which promote cell growth when activated)
-and tumor suppressors have a cross-cancer behaviour that could be
+and tumor suppressors have cross-cancer behaviour that could be
 used to improve estimates, especially for cancer types with limited sample sizes.
 
 We ask: *how much does mutation prevalence vary across cancer types within a
@@ -16,5 +16,5 @@ We take a Bayesian hierarchical approach on
 counts from 10 well-studied oncogenes and tumor suppressors across 20 TCGA
 PanCancer Atlas cancer types (200 (gene, cancer) observations). Our
 hierarchical Beta-Binomial model yields a per-gene concentration parameter
-$s_g$ that directly quantifies cross-cancer consistency a summary that
+$s_g$ that directly quantifies cross-cancer consistency, a summary that
 neither independent Beta-Binomials nor fully pooled rates produce.
