@@ -3,12 +3,12 @@
 ## Hierarchical vs independent rates
 
 Posterior predictive densities from the hierarchical model cover the observed
-rate distribution well (Figure \@ref(fig:ppc-hier)), and leave-one-out
+rate distribution well (Figure 2), and leave-one-out
 cross-validation [via the `loo` package] favours the hierarchical model
 by an ELPD difference of $-28.0$ ($\text{SE} = 5.4$) over the independent
 baseline. This provides evidence that borrowing information across cancer types improves the predictive performance of our model. 
 
-```{r ppc-hier, fig.cap = "Hierarchical model posterior predictive check: observed rate density (dark) against 100 replicated datasets (light).", out.width = "60%"}
+```{r fig:ppc-hier, fig.cap = "Hierarchical model posterior predictive check: observed rate density (dark) against 100 replicated datasets (light).", out.width = "60%"}
 include_graphics("../figs/ppc_hier.png")
 ```
 
@@ -17,18 +17,18 @@ include_graphics("../figs/ppc_hier.png")
 We assess the gene-level posterior predictive distribution,
 $\text{Beta}(\mu_g s_g,\, (1 - \mu_g) s_g)$ marginalized over the posterior of
 $(\mu_g, s_g)$. This is the mutation rate we would expect for unseen cancer types for gene $g$
-(Figure \@ref(fig:gene-pred)). Three patterns emerge across genes:
+(Figure 3). Three patterns emerge across genes:
 
 1. *Broadly active tumor suppressors* (TP53): wide predictive mass across
    $[0, 0.9]$ with posterior mean $\mu_{\text{TP53}} = 0.34$ and low
-   concentration $s_{\text{TP53}} = 2.8$. This reflects the well-known   role of TP53 (cite) as a general tumor suppressor that is important in many cancers, but to different degrees. 
+   concentration $s_{\text{TP53}} = 2.8$. This reflects the role of TP53 as a general tumor suppressor that is important in many cancers, but to different degrees. 
 2. *Cancer-specific oncogenes* (EGFR, CDKN2A): mass concentrated near zero
    with rare high-rate outliers. $\mu_{\text{EGFR}} = 0.044$,
    $s_{\text{EGFR}} = 18.5$ indicate that EFGR mutations are rare in most cancer types but occur in high concentration in a small number of specific cancers, mostly lung adenocarcinoma in this dataset. 
 3. *Intermediate* (PIK3CA, KRAS, PTEN): posterior means in the 0.09–0.13
    range with moderate $s_g$. These genes are involved in multiple cancer types but do not have the same spread of TP53 or concentration of EGFR or CDKN2A.
 
-```{r gene-pred, fig.cap = "Gene-level posterior predictive distribution of $\\theta$ (blue density), overlaid with observed rates as a red rug. TP53 spans a wide range; EGFR and CDKN2A are concentrated near zero with outliers.", out.width = "85%"}
+```{r fig:gene-pred, fig.cap = "Gene-level posterior predictive distribution of $\\theta$ (blue density), overlaid with observed rates as a red rug. TP53 spans a wide range; EGFR and CDKN2A are concentrated near zero with outliers.", out.width = "85%"}
 include_graphics("../figs/gene_predictive.png")
 ```
 
@@ -36,7 +36,7 @@ include_graphics("../figs/gene_predictive.png")
 
 We refit the hierarchical model under two alternative priors on $s_g$. A
 tighter $\text{Gamma}(2, 0.1)$ (mean 20) and diffuse half-Cauchy$(0, 25)$
-(Figure \@ref(fig:prior-sens)). These priors all reflect different assumptions about the degree of cross-cancer consistency. The Gamma prior concentrates mass on moderate values of $s_g$, favouring stronger pooling across cancer types, while the half-Cauchy prior is heavy tailed which allows for the possibility of very large $s_g$. Across all 10 genes and three priors, the maximum shift in
+(Figure @ref(fig:prior-sens)). These priors all reflect different assumptions about the degree of cross-cancer consistency. The Gamma prior concentrates mass on moderate values of $s_g$, favouring stronger pooling across cancer types, while the half-Cauchy prior is heavy tailed which allows for the possibility of very large $s_g$. Across all 10 genes and three priors, the maximum shift in
 $\hat{\mu}_g$ is 0.010, while $s_g$ estimates shift by 10–20%, most visibly for
 genes whose concentration is driven by a single dominant cancer (e.g., EGFR: 18.5, 21.1, 22.0 under Exponential, Gamma, and Cauchy). Gene
 rankings by $\mu_g$ are identical under every prior (Appendix C), confirming that

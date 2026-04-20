@@ -7,7 +7,7 @@ Mutation counts were obtained from the TCGA PanCancer Atlas [@weinstein2013tcga;
 package. For each of $G = 10$ genes (TP53, KRAS, PIK3CA, BRAF, PTEN, APC,
 ARID1A, EGFR, IDH1, CDKN2A) and $C = 20$ cancer types with at least 150
 sequenced tumors, we computed $y_{gc}$, the number of tumors with a mutation in gene $g$ in cancer type $c$, and $n_{gc}$, the
-total number of sequenced tumors for that cancer type to give us $y_{gc}/n_{gc}$ is the observed mutation prevalence. This gives
+total number of sequenced tumors for that cancer type to give us $y_{gc}/n_{gc}$, the observed mutation prevalence. This gives
 $N = G \times C = 200$ observations. Observed rates range from 0.004 (TP53 in
 thyroid) to 0.83 (TP53 in lung squamous).
 

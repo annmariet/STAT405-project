@@ -3,7 +3,8 @@
 We compute the hierarchical posterior with two methods: Hamiltonian Monte Carlo
 (HMC) and automatic differentiation variational inference
 (ADVI) [@kucukelbir2017advi] as a fast approximation. Both use Stan (via
-`cmdstanr`) with the same model code (Appendix A).
+`cmdstanr`) with the same model code (Appendix A). To ensure correctness, both methods 
+were implemented using the same Stan model and validated using standard MCMC diagnostics and posterior predictive checks.
 
 **HMC.** Four chains, 1000 warmup + 1000 sampling iterations each,
 `adapt_delta = 0.95`, `max_treedepth = 12`. Sampling completed in 12 seconds
@@ -16,10 +17,10 @@ factorized Gaussian on unconstrained parameters) and *full-rank* (multivariate
 Gaussian with learned covariance). We fit both with the default ELBO
 convergence criterion.
 
-```{r hmc-vs-advi, fig.cap = "Posterior marginals for three parameters under HMC, mean-field ADVI, and full-rank ADVI. Mean-field tracks HMC closely on all three. Full-rank shifts $\\mu_{\\text{TP53}}$ by nearly $2\\sigma$ and places most of $\\theta_{\\text{TP53,thyroid}}$ mass off the HMC posterior.", out.width = "75%"}
+```{r fig:hmc-vs-advi, fig.cap = "Posterior marginals for three parameters under HMC, mean-field ADVI, and full-rank ADVI. Mean-field tracks HMC closely on all three. Full-rank shifts $\\mu_{\\text{TP53}}$ by nearly $2\\sigma$ and places most of $\\theta_{\\text{TP53,thyroid}}$ mass off the HMC posterior.", out.width = "75%"}
 include_graphics("../figs/hmc_vs_advi.png")
 ```
 
-We assess approximation quality by comparing posterior marginals (Figure @ref(fig:hmc-vs-advi)). For this hierarchical Beta-Binomial model, mean-field ADVI closely matches HMC for both hyperparameters and a representative $\theta_{gc}$. In contrast, full-rank ADVI performs poorly despite using a more flexible variational family and substantially more optimization steps (21,000 vs 700). Its posterior mean for $\mu_{\text{TP53}}$ is biased upward by 0.09, and its marginal for $\theta_{\text{TP53,thyroid}}$ peaks at 0.047, while the HMC posterior is near 0.006.
+We assess approximation quality by comparing posterior marginals (Figure 1). For this hierarchical Beta-Binomial model, mean-field ADVI closely matches HMC for both hyperparameters and a representative $\theta_{gc}$. In contrast, full-rank ADVI performs poorly despite using a more flexible variational family and substantially more optimization steps (21,000 vs 700). Its posterior mean for $\mu_{\text{TP53}}$ is biased upward by 0.09, and its marginal for $\theta_{\text{TP53,thyroid}}$ peaks at 0.047, while the HMC posterior is near 0.006.
 
 These results suggest that the more flexible variational approximation is harder to optimize and can produce misleading results without a clear warning. Mean-field ADVI provides an approximation very similar to HMC and is much faster.  
