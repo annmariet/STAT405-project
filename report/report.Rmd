@@ -1,0 +1,53 @@
+---
+title: "Bayesian Hierarchical Modeling of Cancer Mutation Rates"
+author: "Torrin Pataki and Annmarie Thomson"
+date: "2026-04-18"
+output:
+  pdf_document:
+    number_sections: true
+    keep_tex: false
+geometry: margin=1in
+fontsize: 11pt
+bibliography: refs.bib
+biblio-style: apalike
+urlcolor: blue
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{booktabs}
+  - \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
+                      fig.pos = "H", out.extra = "", fig.align = "center")
+library(knitr)
+```
+
+**Repository**: [github.com/annmariet/STAT405-project](https://github.com/annmariet/STAT405-project)
+
+```{r intro, child = "sections/01_intro.Rmd"}
+```
+
+```{r lit-review, child = "sections/02_lit_review.Rmd"}
+```
+
+```{r data-models, child = "sections/03_data_models.Rmd"}
+```
+
+```{r inference, child = "sections/04_inference.Rmd"}
+```
+
+```{r results, child = "sections/05_results.Rmd"}
+```
+
+```{r discussion, child = "sections/06_discussion.Rmd"}
+```
+
+# References {-}
+
+<div id="refs"></div>
+
+\appendix
+
+```{r appendix, child = "sections/07_appendix.Rmd"}
+```
